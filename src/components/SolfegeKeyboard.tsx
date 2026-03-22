@@ -223,13 +223,13 @@ const SolfegeKeyboard: React.FC<SolfegeKeyboardProps> = ({
       {staffLinePositions.map((top, i) => (
         <div
           key={i}
-          className="absolute left-0 right-0 border-t border-muted-foreground/20 pointer-events-none z-0"
+          className="absolute left-0 right-0 h-1 bg-muted-foreground/20 pointer-events-none z-0"
           style={{ top: `${top}rem` }}
         />
       ))}
       <div className="flex gap-2 relative z-10"> 
       {/* Main (major scale / solfege) notes column */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col ml-8">
         {majorScaleNotes.map((pitch, index) => {
           let solfege = semitonesToSolfege(pitch, true, showChordLabels);
           
@@ -257,7 +257,8 @@ const SolfegeKeyboard: React.FC<SolfegeKeyboardProps> = ({
                 onMouseLeave={(e) => handleButtonRelease(pitch, e)}
                 onTouchStart={(e) => handleButtonPress(pitch, e)}
                 onTouchEnd={(e) => handleButtonRelease(pitch, e)}
-                className={`h-14 text-xl font-bold text-white relative ${getNoteButtonColor(semitonesToSolfege(pitch))} ${!inMainOctave ? 'opacity-70 w-2/3' : 'w-full'} ${isNoteSelected(pitch) ? 'ring-[4px] ring-primary' : ''}`}
+                className={`h-14 text-xl font-bold text-white relative ${getNoteButtonColor(semitonesToSolfege(pitch))} ${!inMainOctave ? 'w-2/3' : 'w-full'} ${isNoteSelected(pitch) ? 'ring-[4px] ring-primary' : ''}`}
+                style={!inMainOctave ? { filter: 'brightness(1.4)' } : undefined}
                 disabled={disabled}
               >
                 {solfege}{buttonSuffix}
@@ -316,7 +317,8 @@ const SolfegeKeyboard: React.FC<SolfegeKeyboardProps> = ({
                   onMouseLeave={(e) => handleButtonRelease(pitch, e)}
                   onTouchStart={(e) => handleButtonPress(pitch, e)}
                   onTouchEnd={(e) => handleButtonRelease(pitch, e)}
-                  className={`h-10 text-lg font-bold text-white relative ${getNoteButtonColor(semitonesToSolfege(pitch))} ${!inMainOctave ? 'opacity-70 w-full' : 'w-full'} ${isNoteSelected(pitch) ? 'ring-4 ring-primary ring-offset-2' : ''}`}
+                  className={`h-10 text-lg font-bold text-white relative ${getNoteButtonColor(semitonesToSolfege(pitch))} w-full ${isNoteSelected(pitch) ? 'ring-4 ring-primary ring-offset-2' : ''}`}
+                  style={!inMainOctave ? { filter: 'brightness(1.4)' } : undefined}
                   disabled={disabled}
                   title={semitonesToSolfege(pitch, true, showChordLabels)}
                 >
