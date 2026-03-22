@@ -513,7 +513,7 @@ const PracticeView = () => {
   //     }
   //     // Pick randomly if not
   //     return [pool[randomInt(pool.length)], "random"];      
-  // }
+  }
 
   /** Weighted random selection from needsPractice, biased towards higher counts. Returns null if there's no suitable needsPractice note */
   function pickFromNeedsPractice(pool: SemitoneOffset[], prevNote: SemitoneOffset | null): SemitoneOffset | null {
