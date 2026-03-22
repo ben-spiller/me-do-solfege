@@ -341,7 +341,7 @@ const PracticeView = () => {
       // Track that this round had a mistake
       roundMistakesRef.current = (roundMistakesRef.current || 0) + 1;
 
-    // Add to needsPractice for the CORRECT note (+3 if first wrong answer or in the danger zone, +1 otherwise)
+      // Add to needsPractice for the CORRECT note (+3 if first wrong answer or in the danger zone, +1 otherwise)
       const oldNeedsPracticeCount = (needsPractice.current.get(pairKey) || 0);
       const newNeedsPracticeCount = Math.min(maxNeedsPractice, oldNeedsPracticeCount + (
         (oldNeedsPracticeCount <3) ? +3 : +1));
@@ -350,10 +350,13 @@ const PracticeView = () => {
       console.log("Needs practice for "+pairKey+" increased from "+oldNeedsPracticeCount+" to "+newNeedsPracticeCount);
       
       // Also increment needsPractice for the INCORRECT note that was entered
-      const incorrectPairKey = `${prevInterval},${selectedNote}`;
-      const incorrectNeedsPracticeCount = (needsPractice.current.get(incorrectPairKey) || 0);
-      needsPractice.current.set(incorrectPairKey, Math.min(maxNeedsPractice, Math.min(maxNeedsPractice, incorrectNeedsPracticeCount + 1)));
-      console.log("Needs practice for "+incorrectPairKey+" increased from "+incorrectNeedsPracticeCount+" to "+(incorrectNeedsPracticeCount + 1));
+      // but NOT once the backlog gets big as then it just builds a frustration loop
+      if (Array.from(needsPractice.current.values()).reduce((a, b) => a + b, 0) < 25) {
+        const incorrectPairKey = `${prevInterval},${selectedNote}`;
+        const incorrectNeedsPracticeCount = (needsPractice.current.get(incorrectPairKey) || 0);
+        needsPractice.current.set(incorrectPairKey, Math.min(maxNeedsPractice, Math.min(maxNeedsPractice, incorrectNeedsPracticeCount + 1)));
+        console.log("Needs practice for "+incorrectPairKey+" increased from "+incorrectNeedsPracticeCount+" to "+(incorrectNeedsPracticeCount + 1));
+      }
     }
 
     // Show overlay (including needs-practice delta) and schedule automatic clear
