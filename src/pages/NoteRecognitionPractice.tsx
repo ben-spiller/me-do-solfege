@@ -533,12 +533,12 @@ const PracticeView = () => {
     }
     if (validPairs.length === 0) return null;
 
-    // Weight by count (higher count = more likely to be selected)
-    const totalWeight = validPairs.reduce((sum, [_, count]) => sum + count, 0);
+    // Weight by count^2 (higher count = much more likely to be selected)
+    const totalWeight = validPairs.reduce((sum, [_, count]) => sum + count * count, 0);
     let random = Math.random() * totalWeight;
     
     for (const [pairKey, count] of validPairs) {
-      random -= count;
+      random -= count * count;
       if (random <= 0) {
         const [_, storedNote] = pairKey.split(',');
         return parseInt(storedNote);
