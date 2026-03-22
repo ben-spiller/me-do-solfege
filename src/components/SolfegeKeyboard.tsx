@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import { SemitoneOffset, MAJOR_SCALE_PITCH_CLASSES, semitonesToSolfege } from "@/utils/audio";
@@ -195,11 +195,39 @@ const SolfegeKeyboard: React.FC<SolfegeKeyboardProps> = ({
   }
   const totalHeightRem = accTop + buttonHeightREM;
 
+  // Randomly decide whether do (index 0) or the next note (index 1) sits on a line.
+  // Then every other (alternating) note gets a line. Stable per mount.
+  const lineOffset = useMemo(() => Math.round(Math.random()), []);
+
+  // Compute staff-line positions: center of every other diatonic button
+  const staffLinePositions = useMemo(() => {
+    const positions: number[] = [];
+    for (let i = 0; i < majorScaleNotes.length; i++) {
+      if ((i % 2) === lineOffset) {
+        const top = diatonicTopMap.get(majorScaleNotes[i]);
+        if (top !== undefined) {
+          positions.push(top + buttonHeightREM / 2);
+        }
+      }
+    }
+    return positions;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [majorScaleNotes.length, lineOffset, buttonHeightREM]);
+
   // Check if a note is in the main octave (0-11)
   const isInMainOctave = (semitone: SemitoneOffset) => semitone >= 0 && semitone <= 11;
 
   return (
-    <div className="flex gap-2" style={{ margin: "8px" /* Margin is to give space for selected notes */}}> 
+    <div className="relative" style={{ margin: "8px" }}>
+      {/* Staff lines spanning full width */}
+      {staffLinePositions.map((top, i) => (
+        <div
+          key={i}
+          className="absolute left-0 right-0 border-t border-muted-foreground/20 pointer-events-none z-0"
+          style={{ top: `${top}rem` }}
+        />
+      ))}
+      <div className="flex gap-2 relative z-10"> 
       {/* Main (major scale / solfege) notes column */}
       <div className="flex-1 flex flex-col">
         {majorScaleNotes.map((pitch, index) => {
@@ -318,6 +346,7 @@ const SolfegeKeyboard: React.FC<SolfegeKeyboardProps> = ({
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );
