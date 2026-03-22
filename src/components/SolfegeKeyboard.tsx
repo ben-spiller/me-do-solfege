@@ -347,6 +347,7 @@ const SolfegeKeyboard: React.FC<SolfegeKeyboardProps> = ({
           );
         })}
       </div>
+      </div>
     </div>
   );
 };
