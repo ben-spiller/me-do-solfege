@@ -217,6 +217,13 @@ const SolfegeKeyboard: React.FC<SolfegeKeyboardProps> = ({
   // Check if a note is in the main octave (0-11)
   const isInMainOctave = (semitone: SemitoneOffset) => semitone >= 0 && semitone <= 11;
 
+  const getButtonStyle = (inMainOctave: boolean): React.CSSProperties | undefined => {
+    if (disabled) {
+      return { filter: 'brightness(1.1) saturate(0.6)' };
+    }
+    return inMainOctave ? undefined : { filter: 'brightness(0.9) saturate(0.9)' };
+  };
+
   return (
     <div className="relative" style={{ margin: "8px" }}>
       {/* Staff lines spanning full width */}
@@ -257,8 +264,8 @@ const SolfegeKeyboard: React.FC<SolfegeKeyboardProps> = ({
                 onMouseLeave={(e) => handleButtonRelease(pitch, e)}
                 onTouchStart={(e) => handleButtonPress(pitch, e)}
                 onTouchEnd={(e) => handleButtonRelease(pitch, e)}
-                className={`h-14 text-xl font-bold text-white relative ${getNoteButtonColor(semitonesToSolfege(pitch))} ${!inMainOctave ? 'w-2/3' : 'w-full'} ${isNoteSelected(pitch) ? 'ring-[4px] ring-primary' : ''}`}
-                style={!inMainOctave ? { filter: 'brightness(1.4)' } : undefined}
+                className={`h-14 text-xl font-bold text-white relative ${getNoteButtonColor(semitonesToSolfege(pitch))} ${!inMainOctave ? 'w-2/3' : 'w-full'} ${isNoteSelected(pitch) ? 'ring-[4px] ring-primary' : ''} disabled:opacity-100`}
+                style={getButtonStyle(inMainOctave)}
                 disabled={disabled}
               >
                 {solfege}{buttonSuffix}
@@ -317,8 +324,8 @@ const SolfegeKeyboard: React.FC<SolfegeKeyboardProps> = ({
                   onMouseLeave={(e) => handleButtonRelease(pitch, e)}
                   onTouchStart={(e) => handleButtonPress(pitch, e)}
                   onTouchEnd={(e) => handleButtonRelease(pitch, e)}
-                  className={`h-10 text-lg font-bold text-white relative ${getNoteButtonColor(semitonesToSolfege(pitch))} w-full ${isNoteSelected(pitch) ? 'ring-4 ring-primary ring-offset-2' : ''}`}
-                  style={!inMainOctave ? { filter: 'brightness(1.4)' } : undefined}
+                  className={`h-10 text-lg font-bold text-white relative ${getNoteButtonColor(semitonesToSolfege(pitch))} w-full ${isNoteSelected(pitch) ? 'ring-4 ring-primary ring-offset-2' : ''} disabled:opacity-100`}
+                  style={getButtonStyle(inMainOctave)}
                   disabled={disabled}
                   title={semitonesToSolfege(pitch, true, showChordLabels)}
                 >
